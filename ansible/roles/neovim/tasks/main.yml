@@ -2,12 +2,14 @@
 # roles/neovim/tasks/main.yml
 # Installs neovim nightly via asdf (which is installed via Homebrew).
 # Requires: brew role has run first.
+# NOTE: become: false on all user-level tasks — asdf/neovim must install into user home.
 
 - name: Ensure ~/.local/bin exists
   ansible.builtin.file:
     path: "{{ neovim_bin_dir }}"
     state: directory
     mode: "0755"
+  become: false
   tags: lazyvim
 
 - name: Add asdf neovim plugin
@@ -19,37 +21,41 @@
   failed_when:
     - asdf_plugin_add.rc != 0
     - "'already added' not in asdf_plugin_add.stderr"
+  become: false
   tags: lazyvim
 
 - name: Check if neovim nightly already installed via asdf
-  ansible.builtin.command: "{{ asdf_bin }} where neovim"
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  ansible.builtin.shell: |
+    eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    asdf where neovim
   register: asdf_nvim_where
   failed_when: false
   changed_when: false
+  become: false
   tags: lazyvim
 
 - name: Install neovim nightly via asdf
-  ansible.builtin.command: "{{ asdf_bin }} install neovim nightly"
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  ansible.builtin.shell: |
+    eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    asdf install neovim nightly
   when: asdf_nvim_where.rc != 0
+  become: false
   tags: lazyvim
 
 - name: Set neovim nightly as global default
-  ansible.builtin.command: "{{ asdf_bin }} set -u neovim nightly"
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  ansible.builtin.shell: |
+    eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    asdf set -u neovim nightly
   when: asdf_nvim_where.rc != 0
+  become: false
   tags: lazyvim
 
 - name: Symlink nvim to ~/.local/bin
   ansible.builtin.shell: |
-    NVIM_PATH=$({{ asdf_bin }} where neovim)/bin/nvim
+    eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    NVIM_PATH=$(asdf where neovim)/bin/nvim
     ln -sf "$NVIM_PATH" {{ neovim_bin_dir }}/nvim
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  become: false
   tags: lazyvim
 
 - name: Ensure ~/.local/bin is in PATH via ~/.profile
@@ -58,21 +64,52 @@
     line: 'export PATH="$HOME/.local/bin:$PATH"'
     create: true
     mode: "0644"
+  become: false
   tags: lazyvim
 
-- name: Install luarocks tiktoken_core (for codecompanion)
-  ansible.builtin.shell: |
-    luarocks install --lua-version 5.1 tiktoken_core
-  args:
-    creates: "{{ lookup('env', 'HOME') }}/.luarocks/lib/luarocks/rocks-5.1/tiktoken_core"
+- name: Install luarocks (apt) + build deps
+  ansible.builtin.apt:
+    name:
+      - luarocks
+      - build-essential
+      - pkg-config
+      - ripgrep
+      - fd-find
+      - xclip
+      - python3-pynvim
+    state: present
+  become: true
   tags: lazyvim
 
-- name: Install neovim npm package (node provider)
-  community.general.npm:
-    name: neovim
-    global: true
-    executable: "{{ brew_prefix }}/bin/npm"
+- name: Install rust via brew
+  community.general.homebrew:
+    name: rust
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
   environment:
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
   tags: lazyvim
 
+- name: Install luarocks tiktoken_core (for codecompanion)
+  ansible.builtin.shell: |
+    eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    luarocks install --lua-version 5.1 --local tiktoken_core
+  args:
+    creates: "{{ lookup('env', 'HOME') }}/.luarocks/lib/luarocks/rocks-5.1/tiktoken_core"
+  become: false
+  tags: lazyvim
+
+- name: Install nodejs + npm (apt) for build tools only
+  ansible.builtin.apt:
+    name: [nodejs, npm]
+    state: present
+  become: true
+  tags: lazyvim
+
+- name: Install neovim npm package (node provider) via brew node
+  ansible.builtin.shell: |
+    eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    npm install -g neovim
+  become: false
+  tags: lazyvim

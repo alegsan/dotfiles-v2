@@ -3,7 +3,7 @@ return {
   opts = {
     formatters_by_ft = {
       yaml = { "prettier" },
-      -- other filetypes and formatters
+      -- fish_indent removed — fish shell not used
     },
   },
 }

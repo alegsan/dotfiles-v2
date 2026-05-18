@@ -1,17 +1,31 @@
 ---
 # roles/brew/tasks/main.yml
 # Installs Linuxbrew and required brew packages / casks.
+# ALL tasks must run as regular user (become: false) — brew refuses to run as root.
 
 - name: Check if Homebrew is installed
   ansible.builtin.stat:
     path: "{{ brew_bin }}"
   register: brew_stat
+  become: false
+  tags: brew
+
+- name: Create /home/linuxbrew directory
+  ansible.builtin.file:
+    path: /home/linuxbrew
+    state: directory
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    mode: "0755"
+  become: true
+  when: not brew_stat.stat.exists
   tags: brew
 
 - name: Install Homebrew (Linuxbrew)
   ansible.builtin.shell: |
     NONINTERACTIVE=1 /bin/bash -c \
       "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  become: false
   when: not brew_stat.stat.exists
   tags: brew
 
@@ -20,6 +34,7 @@
     name: "{{ brew_packages }}"
     state: present
     path: "{{ brew_prefix }}/bin"
+  become: false
   environment:
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
   tags: brew
@@ -29,6 +44,7 @@
     name: "{{ brew_casks }}"
     state: present
     path: "{{ brew_prefix }}/bin"
+  become: false
   environment:
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
   ignore_errors: true   # cask installs can fail on headless machines
@@ -42,4 +58,5 @@
       eval "$({{ brew_prefix }}/bin/brew shellenv)"
     create: true
     mode: "0644"
+  become: false
   tags: brew

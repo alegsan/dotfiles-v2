@@ -2,7 +2,7 @@
 {{- $name    := promptStringOnce  . "name"    "Your full name" -}}
 {{- $email   := promptStringOnce  . "email"   "Your email address" -}}
 
-data:
-    profile: {{ $profile | quote }}
-    name:    {{ $name    | quote }}
-    email:   {{ $email   | quote }}
+[data]
+    profile = {{ $profile | quote }}
+    name    = {{ $name    | quote }}
+    email   = {{ $email   | quote }}

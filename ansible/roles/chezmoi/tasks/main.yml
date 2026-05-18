@@ -17,12 +17,32 @@
   when: chezmoi_which.rc != 0
   tags: dotfiles
 
-- name: Run chezmoi init + apply from local source directory
+- name: Ensure chezmoi config directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.config/chezmoi"
+    state: directory
+    mode: "0700"
+  become: false
+  tags: dotfiles
+
+- name: Pre-populate chezmoi config (skips interactive prompts during init)
+  ansible.builtin.copy:
+    dest: "{{ lookup('env', 'HOME') }}/.config/chezmoi/chezmoi.toml"
+    content: |
+      [data]
+          profile = "{{ profile }}"
+          name    = "{{ chezmoi_name | default('Your Name') }}"
+          email   = "{{ chezmoi_email | default('your@email.com') }}"
+    mode: "0600"
+    force: false
+  become: false
+  tags: dotfiles
+
+- name: Run chezmoi apply from local source directory
   ansible.builtin.command: >
-    {{ neovim_bin_dir }}/chezmoi init --apply
+    {{ neovim_bin_dir }}/chezmoi apply
     --source {{ chezmoi_source_dir }}
-  environment:
-    CHEZMOI_PROFILE: "{{ profile }}"
   register: chezmoi_apply
   changed_when: chezmoi_apply.stdout != ""
+  become: false
   tags: dotfiles
