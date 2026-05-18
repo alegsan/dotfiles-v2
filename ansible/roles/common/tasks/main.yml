@@ -1,0 +1,38 @@
+---
+# roles/common/tasks/main.yml — Base packages + zsh setup
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  tags: packages
+
+- name: Install common packages
+  ansible.builtin.apt:
+    name: "{{ common_packages }}"
+    state: present
+  become: true
+  tags: packages
+
+- name: Install profile-specific packages
+  ansible.builtin.apt:
+    name: "{{ profile_packages | default([]) }}"
+    state: present
+  become: true
+  tags: packages
+  when: profile_packages is defined and profile_packages | length > 0
+
+- name: Set zsh as default shell
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: /usr/bin/zsh
+  become: true
+  tags: packages
+
+- name: Ensure ~/.local/bin exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.local/bin"
+    state: directory
+    mode: "0755"
+  tags: packages

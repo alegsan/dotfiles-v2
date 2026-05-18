@@ -1,0 +1,45 @@
+---
+# roles/brew/tasks/main.yml
+# Installs Linuxbrew and required brew packages / casks.
+
+- name: Check if Homebrew is installed
+  ansible.builtin.stat:
+    path: "{{ brew_bin }}"
+  register: brew_stat
+  tags: brew
+
+- name: Install Homebrew (Linuxbrew)
+  ansible.builtin.shell: |
+    NONINTERACTIVE=1 /bin/bash -c \
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  when: not brew_stat.stat.exists
+  tags: brew
+
+- name: Install brew packages
+  community.general.homebrew:
+    name: "{{ brew_packages }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  tags: brew
+
+- name: Install brew casks (fonts)
+  community.general.homebrew_cask:
+    name: "{{ brew_casks }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  ignore_errors: true   # cask installs can fail on headless machines
+  tags: brew
+
+- name: Ensure brew shellenv in ~/.profile
+  ansible.builtin.blockinfile:
+    path: "{{ lookup('env', 'HOME') }}/.profile"
+    marker: "# {mark} ANSIBLE MANAGED — Homebrew"
+    block: |
+      eval "$({{ brew_prefix }}/bin/brew shellenv)"
+    create: true
+    mode: "0644"
+  tags: brew

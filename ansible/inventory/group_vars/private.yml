@@ -1,0 +1,9 @@
+---
+# Private machine specific packages
+profile_packages:
+  - vlc
+  # - steam           # uncomment for gaming setup
+  # - obs-studio
+
+# Private-specific vars
+# (add as needed)

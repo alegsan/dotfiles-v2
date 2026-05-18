@@ -1,0 +1,43 @@
+---
+# Vars shared across all profiles
+dotfiles_dir: "{{ lookup('env', 'HOME') }}/.dotfiles"
+chezmoi_source_dir: "{{ dotfiles_dir }}/home"
+
+# Base apt packages installed on every machine
+common_packages:
+  - git
+  - curl
+  - wget
+  - zsh
+  - tmux
+  - ripgrep
+  - fd-find
+  - jq
+  - unzip
+  - xclip
+  - build-essential
+  - luarocks
+  - nodejs
+  - npm
+  - python3-pip
+  - python3-pynvim
+  - cargo
+
+# Linuxbrew
+brew_prefix: "/home/linuxbrew/.linuxbrew"
+brew_bin: "{{ brew_prefix }}/bin/brew"
+
+# Brew packages (newer versions than apt provides)
+brew_packages:
+  - fzf
+  - lazygit
+  - gh
+  - lynx
+  - asdf
+
+brew_casks:
+  - font-iosevka-nerd-font
+
+# Neovim via asdf (nightly)
+asdf_bin: "{{ brew_prefix }}/bin/asdf"
+neovim_bin_dir: "{{ lookup('env', 'HOME') }}/.local/bin"

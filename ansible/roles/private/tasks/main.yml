@@ -1,0 +1,15 @@
+---
+# roles/private/tasks/main.yml — Personal machine setup
+
+# Example: enable flatpak
+# - name: Install flatpak
+#   ansible.builtin.apt:
+#     name: flatpak
+#     state: present
+#   become: true
+#   tags: private
+
+- name: Private role placeholder
+  ansible.builtin.debug:
+    msg: "Private profile active — add your personal tasks here."
+  tags: private

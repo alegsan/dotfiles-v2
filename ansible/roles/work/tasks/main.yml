@@ -1,0 +1,26 @@
+---
+# roles/work/tasks/main.yml — Company-specific setup
+# Add tasks for: corp CA certs, proxy config, VPN, internal tools, etc.
+
+- name: Add current user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true
+  become: true
+  tags: work
+
+# Example: Install company CA certificate
+# - name: Copy company CA cert
+#   ansible.builtin.copy:
+#     src: files/company-ca.crt
+#     dest: /usr/local/share/ca-certificates/company-ca.crt
+#     mode: "0644"
+#   become: true
+#   notify: Update CA certificates
+#   tags: work
+
+# handlers:
+#   - name: Update CA certificates
+#     ansible.builtin.command: update-ca-certificates
+#     become: true

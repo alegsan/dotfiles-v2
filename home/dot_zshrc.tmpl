@@ -1,0 +1,48 @@
+# ~/.zshrc — managed by chezmoi, profile: {{ .profile }}
+
+# ── PATH ───────────────────────────────────────────────────────────────────────
+export PATH="$HOME/.local/bin:$PATH"
+
+# ── Editor ────────────────────────────────────────────────────────────────────
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# ── History ───────────────────────────────────────────────────────────────────
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+
+# ── Aliases ───────────────────────────────────────────────────────────────────
+alias v="nvim"
+alias vim="nvim"
+alias ll="ls -lAh --color=auto"
+alias la="ls -A --color=auto"
+alias ..="cd .."
+alias ...="cd ../.."
+alias g="git"
+alias gs="git status"
+alias gp="git pull"
+
+# fd-find ships as 'fdfind' on Ubuntu — alias to fd
+if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+  alias fd="fdfind"
+fi
+
+# ── fzf ───────────────────────────────────────────────────────────────────────
+[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && \
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+
+# ── Profile-specific ──────────────────────────────────────────────────────────
+{{ if eq .profile "work" -}}
+# Work machine extras
+# export HTTP_PROXY="http://proxy.company.com:8080"
+# export HTTPS_PROXY="$HTTP_PROXY"
+{{ else -}}
+# Private machine extras
+{{ end -}}
+
+# ── Local overrides (not managed by chezmoi) ──────────────────────────────────
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

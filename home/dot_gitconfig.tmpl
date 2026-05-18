@@ -1,0 +1,34 @@
+[user]
+    name  = {{ .name  | quote }}
+    email = {{ .email | quote }}
+
+[core]
+    editor     = nvim
+    autocrlf   = input
+    pager      = delta
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[delta]
+    navigate    = true
+    line-numbers = true
+    side-by-side = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+{{ if eq .profile "work" -}}
+# ── Work-specific git config ───────────────────────────────────────────────────
+# [http]
+#     proxy = http://proxy.company.com:8080
+{{ end -}}

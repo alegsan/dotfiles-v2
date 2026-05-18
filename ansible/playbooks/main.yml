@@ -1,0 +1,43 @@
+---
+# main.yml — Master playbook
+# Usage:
+#   ansible-playbook ansible/playbooks/main.yml -K -e profile=work
+#   ansible-playbook ansible/playbooks/main.yml -K -e profile=work --tags lazyvim
+#
+# Available tags: packages, lazyvim, dotfiles, work, private
+
+- name: Bootstrap machine
+  hosts: localhost
+  vars_files:
+    - "{{ playbook_dir }}/../inventory/group_vars/all.yml"
+    - "{{ playbook_dir }}/../inventory/group_vars/{{ profile | default('work') }}.yml"
+
+  pre_tasks:
+    - name: Validate profile variable
+      ansible.builtin.assert:
+        that:
+          - profile is defined
+          - profile in ['work', 'private']
+        fail_msg: "profile must be 'work' or 'private'. Pass with: -e profile=work"
+      tags: always
+
+  roles:
+    - role: common
+      tags: [packages]
+
+    - role: brew
+      tags: [brew, packages]
+
+    - role: neovim
+      tags: [lazyvim, packages]
+
+    - role: work
+      tags: [work]
+      when: profile == 'work'
+
+    - role: private
+      tags: [private]
+      when: profile == 'private'
+
+    - role: chezmoi
+      tags: [dotfiles, lazyvim]

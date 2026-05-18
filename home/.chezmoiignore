@@ -1,0 +1,20 @@
+# .chezmoiignore — exclude files that don't apply to this machine's profile
+# Template syntax: {{ .profile }} is "work" or "private"
+
+README.md
+
+# Neovim runtime state — managed by LazyVim/lazy.nvim itself, not chezmoi
+dot_config/nvim/lazyvim.json
+dot_config/nvim/.neoconf.json
+dot_config/nvim/lazy-lock.json
+dot_config/nvim/.gitignore
+
+{{- if ne .profile "work" }}
+# Work-only dotfiles — ignored on private machine
+dot_config/work-tools
+{{- end }}
+
+{{- if ne .profile "private" }}
+# Private-only dotfiles — ignored on work machine
+dot_config/private-tools
+{{- end }}

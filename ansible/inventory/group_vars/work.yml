@@ -1,0 +1,12 @@
+---
+# Work-machine specific packages
+# Add company tooling here (kubectl, docker, VPN clients, corp CA certs, etc.)
+profile_packages:
+  - docker.io
+  - docker-compose
+  # - kubectl         # uncomment + add task for proper kubectl install
+  # - openvpn         # example VPN client
+
+# Work-specific vars
+# work_proxy: "http://proxy.company.com:8080"
+# work_ca_cert_url: "https://internal.company.com/ca.crt"

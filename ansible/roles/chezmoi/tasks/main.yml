@@ -1,0 +1,28 @@
+---
+# roles/chezmoi/tasks/main.yml
+# Installs chezmoi binary and applies dotfiles from the embedded home/ source dir.
+
+- name: Check if chezmoi is installed
+  ansible.builtin.command: which chezmoi
+  register: chezmoi_which
+  failed_when: false
+  changed_when: false
+  tags: dotfiles
+
+- name: Install chezmoi via official install script
+  ansible.builtin.shell: |
+    sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "{{ neovim_bin_dir }}"
+  args:
+    creates: "{{ neovim_bin_dir }}/chezmoi"
+  when: chezmoi_which.rc != 0
+  tags: dotfiles
+
+- name: Run chezmoi init + apply from local source directory
+  ansible.builtin.command: >
+    {{ neovim_bin_dir }}/chezmoi init --apply
+    --source {{ chezmoi_source_dir }}
+  environment:
+    CHEZMOI_PROFILE: "{{ profile }}"
+  register: chezmoi_apply
+  changed_when: chezmoi_apply.stdout != ""
+  tags: dotfiles
