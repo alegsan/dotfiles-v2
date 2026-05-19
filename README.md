@@ -6,7 +6,7 @@ Personal system configuration — bootstraps Ubuntu machines from scratch.
 ## Quick start (fresh machine)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOU/dotfiles-v2/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/alegsan/dotfiles-v2/feature/chezmoi-ansible/bootstrap.sh | bash
 cd ~/.dotfiles
 ansible-playbook ansible/playbooks/main.yml -K -e profile=work   # or profile=private
 ```
