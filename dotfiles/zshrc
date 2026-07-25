@@ -1,4 +1,4 @@
-# ~/.zshrc — managed by chezmoi, profile: {{ .profile }}
+# ~/.zshrc — managed by Ansible/dotfiles repo
 
 # ── PATH ───────────────────────────────────────────────────────────────────────
 export PATH="$HOME/.local/bin:$PATH"
@@ -35,14 +35,5 @@ fi
 [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && \
   source /usr/share/doc/fzf/examples/key-bindings.zsh
 
-# ── Profile-specific ──────────────────────────────────────────────────────────
-{{ if eq .profile "work" -}}
-# Work machine extras
-# export HTTP_PROXY="http://proxy.company.com:8080"
-# export HTTPS_PROXY="$HTTP_PROXY"
-{{ else -}}
-# Private machine extras
-{{ end -}}
-
-# ── Local overrides (not managed by chezmoi) ──────────────────────────────────
+# ── Local overrides (machine-specific, not managed by repo) ───────────────────
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

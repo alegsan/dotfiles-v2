@@ -1,7 +1,7 @@
 ---
 # Vars shared across all profiles
-dotfiles_dir: "{{ lookup('env', 'HOME') }}/.dotfiles"
-chezmoi_source_dir: "{{ dotfiles_dir }}/home"
+repo_dir: "{{ lookup('env', 'HOME') }}/.dotfiles"
+dotfiles_dir: "{{ repo_dir }}/dotfiles"
 
 # Base apt packages installed on every machine
 common_packages:
@@ -35,6 +35,7 @@ brew_packages:
   - lynx
   - asdf
   - node
+  - delta
 
 brew_casks:
   - font-iosevka-nerd-font

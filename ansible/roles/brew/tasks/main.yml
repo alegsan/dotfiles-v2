@@ -27,6 +27,7 @@
       "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   become: false
   when: not brew_stat.stat.exists
+  changed_when: false
   tags: brew
 
 - name: Install brew packages
@@ -47,7 +48,8 @@
   become: false
   environment:
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
-  ignore_errors: true   # cask installs can fail on headless machines
+  register: brew_cask_result
+  failed_when: false   # cask installs can fail on headless machines
   tags: brew
 
 - name: Ensure brew shellenv in ~/.profile

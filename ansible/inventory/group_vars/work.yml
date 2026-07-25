@@ -1,4 +1,8 @@
 ---
+# User identity — leave empty to be prompted on first Ansible run
+user_name: ""
+user_email: ""
+
 # Work-machine specific packages
 # Add company tooling here (kubectl, docker, VPN clients, corp CA certs, etc.)
 profile_packages:

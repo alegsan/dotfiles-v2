@@ -3,7 +3,7 @@ ANSIBLE_DIR  := $(DOTFILES_DIR)/ansible
 PLAYBOOK     := $(ANSIBLE_DIR)/playbooks/main.yml
 PROFILE      ?= work
 
-.PHONY: help install dotfiles lazyvim packages lint
+.PHONY: help install dotfiles lazyvim packages brew lint
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -12,15 +12,16 @@ help: ## Show this help
 install: ## Full setup for PROFILE (default: work). Usage: make install PROFILE=private
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE)
 
-dotfiles: ## Only apply chezmoi dotfiles
+dotfiles: ## Only symlink dotfiles
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags dotfiles
 
-lazyvim: ## Only install neovim + lazyvim
+lazyvim: ## Only install neovim + LazyVim deps
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags lazyvim
 
 brew: ## Only install Homebrew + brew packages
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags brew
 
+packages: ## Only install apt packages
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages
 
 lint: ## Lint ansible playbooks

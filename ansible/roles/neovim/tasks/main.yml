@@ -4,23 +4,25 @@
 # Requires: brew role has run first.
 # NOTE: become: false on all user-level tasks — asdf/neovim must install into user home.
 
-- name: Ensure ~/.local/bin exists
+- name: Ensure ~/.local/bin exists (owned by user)
   ansible.builtin.file:
     path: "{{ neovim_bin_dir }}"
     state: directory
     mode: "0755"
-  become: false
+    owner: "{{ ansible_facts['user_id'] }}"
+    group: "{{ ansible_facts['user_id'] }}"
+  become: true
   tags: lazyvim
 
 - name: Add asdf neovim plugin
   ansible.builtin.command: "{{ asdf_bin }} plugin add neovim https://github.com/richin13/asdf-neovim"
   environment:
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
-  register: asdf_plugin_add
-  changed_when: "'already added' not in asdf_plugin_add.stderr"
+  register: neovim_asdf_plugin_add
+  changed_when: "'already added' not in neovim_asdf_plugin_add.stderr"
   failed_when:
-    - asdf_plugin_add.rc != 0
-    - "'already added' not in asdf_plugin_add.stderr"
+    - neovim_asdf_plugin_add.rc != 0
+    - "'already added' not in neovim_asdf_plugin_add.stderr"
   become: false
   tags: lazyvim
 
@@ -28,7 +30,7 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     asdf where neovim
-  register: asdf_nvim_where
+  register: neovim_asdf_nvim_where
   failed_when: false
   changed_when: false
   become: false
@@ -38,7 +40,8 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     asdf install neovim nightly
-  when: asdf_nvim_where.rc != 0
+  when: neovim_asdf_nvim_where.rc != 0
+  changed_when: false
   become: false
   tags: lazyvim
 
@@ -46,7 +49,8 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     asdf set -u neovim nightly
-  when: asdf_nvim_where.rc != 0
+  when: neovim_asdf_nvim_where.rc != 0
+  changed_when: false
   become: false
   tags: lazyvim
 
@@ -55,6 +59,7 @@
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     NVIM_PATH=$(asdf where neovim)/bin/nvim
     ln -sf "$NVIM_PATH" {{ neovim_bin_dir }}/nvim
+  changed_when: false
   become: false
   tags: lazyvim
 
@@ -111,5 +116,6 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     npm install -g neovim
+  changed_when: false
   become: false
   tags: lazyvim

@@ -1,0 +1,20 @@
+# Ansible
+.ansible/
+ansible/**/*.retry
+ansible/**/files/*.crt
+*.fact
+*.retry
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Shell
+*.zsh_history
+*.bash_history

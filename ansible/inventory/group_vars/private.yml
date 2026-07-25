@@ -1,4 +1,8 @@
 ---
+# User identity — leave empty to be prompted on first Ansible run
+user_name: ""
+user_email: ""
+
 # Private machine specific packages
 profile_packages:
   - vlc

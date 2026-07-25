@@ -1,0 +1,19 @@
+---
+# ansible-lint configuration
+exclude_paths:
+  - .cache/
+  - .github/
+
+# Skip rules that are noise for a single-machine dotfiles setup
+skip_list:
+  - name[casing]          # allow lowercase role names
+  - name[template]        # allow non-jinja task names
+  - command-instead-of-shell  # brew/asdf tasks need shell
+  - no-handler            # some changes don't need handlers
+  - var-naming[no-role-prefix]  # user_name/user_email are group_vars interface
+
+warn_list:
+  - experimental
+  - yaml[line-length]     # warn only on long lines
+
+use_default_rules: true

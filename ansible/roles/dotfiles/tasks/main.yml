@@ -1,0 +1,154 @@
+---
+# roles/dotfiles/tasks/main.yml
+# Symlinks dotfiles from the repo into $HOME.
+# All tasks run as regular user (become: false) — no sudo needed.
+
+# ── User identity (local facts) ───────────────────────────────────────────────
+
+- name: Ensure /etc/ansible/facts.d exists
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    state: directory
+    mode: "0755"
+  become: true
+  tags: dotfiles
+
+- name: Read local facts (user identity)
+  ansible.builtin.setup:
+    filter: ansible_local
+  tags: dotfiles
+
+- name: Prompt for user name (first run only)
+  ansible.builtin.pause:
+    prompt: "Your full name"
+  register: dotfiles_prompt_name
+  when: ansible_local.user is not defined or ansible_local.user.name | default('') == ''
+  tags: dotfiles
+
+- name: Prompt for user email (first run only)
+  ansible.builtin.pause:
+    prompt: "Your email address"
+  register: dotfiles_prompt_email
+  when: ansible_local.user is not defined or ansible_local.user.email | default('') == ''
+  tags: dotfiles
+
+- name: Set user_name fact from prompt
+  ansible.builtin.set_fact:
+    user_name: "{{ dotfiles_prompt_name.user_input }}"
+  when: dotfiles_prompt_name is not skipped
+  tags: dotfiles
+
+- name: Set user_name fact from local facts
+  ansible.builtin.set_fact:
+    user_name: "{{ ansible_local.user.name }}"
+  when: dotfiles_prompt_name is skipped
+  tags: dotfiles
+
+- name: Set user_email fact from prompt
+  ansible.builtin.set_fact:
+    user_email: "{{ dotfiles_prompt_email.user_input }}"
+  when: dotfiles_prompt_email is not skipped
+  tags: dotfiles
+
+- name: Set user_email fact from local facts
+  ansible.builtin.set_fact:
+    user_email: "{{ ansible_local.user.email }}"
+  when: dotfiles_prompt_email is skipped
+  tags: dotfiles
+
+- name: Save user identity to local facts
+  ansible.builtin.copy:
+    dest: /etc/ansible/facts.d/user.fact
+    content: |
+      [user]
+      name={{ user_name }}
+      email={{ user_email }}
+    mode: "0644"
+  become: true
+  tags: dotfiles
+
+# ── Common dotfiles ───────────────────────────────────────────────────────────
+
+- name: Symlink ~/.zshrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/zshrc"
+    dest: "{{ lookup('env', 'HOME') }}/.zshrc"
+    state: link
+    force: true
+  become: false
+  tags: dotfiles
+
+- name: Symlink ~/.gitconfig
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/gitconfig"
+    dest: "{{ lookup('env', 'HOME') }}/.gitconfig"
+    state: link
+    force: true
+  become: false
+  tags: dotfiles
+
+- name: Ensure ~/.config exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.config"
+    state: directory
+    mode: "0755"
+  become: false
+  tags: dotfiles
+
+- name: Symlink ~/.config/nvim
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/config/nvim"
+    dest: "{{ lookup('env', 'HOME') }}/.config/nvim"
+    state: link
+    force: true
+  become: false
+  tags: dotfiles
+
+# ── Profile-specific dotfiles ─────────────────────────────────────────────────
+
+- name: Check profile config dir exists
+  ansible.builtin.stat:
+    path: "{{ dotfiles_dir }}/{{ profile }}/config"
+  register: dotfiles_profile_config
+  become: false
+  tags: dotfiles
+
+- name: Find profile-specific config dirs
+  ansible.builtin.find:
+    paths: "{{ dotfiles_dir }}/{{ profile }}/config"
+    file_type: directory
+    recurse: false
+  register: dotfiles_profile_config_dirs
+  become: false
+  tags: dotfiles
+  when: dotfiles_profile_config.stat.exists
+
+- name: Symlink profile-specific ~/.config entries
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "{{ lookup('env', 'HOME') }}/.config/{{ item.path | basename }}"
+    state: link
+    force: true
+  loop: "{{ dotfiles_profile_config_dirs.files }}"
+  become: false
+  tags: dotfiles
+
+# ── Machine-specific generated files ─────────────────────────────────────────
+
+- name: Write ~/.gitconfig.local (name + email)
+  ansible.builtin.template:
+    src: gitconfig.local.j2
+    dest: "{{ lookup('env', 'HOME') }}/.gitconfig.local"
+    mode: "0600"
+    force: false
+  become: false
+  tags: dotfiles
+
+- name: Write ~/.zshrc.local (profile-specific env)
+  ansible.builtin.template:
+    src: zshrc.local.j2
+    dest: "{{ lookup('env', 'HOME') }}/.zshrc.local"
+    mode: "0644"
+    force: false
+  become: false
+  tags: dotfiles

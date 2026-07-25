@@ -4,7 +4,7 @@
 #   ansible-playbook ansible/playbooks/main.yml -K -e profile=work
 #   ansible-playbook ansible/playbooks/main.yml -K -e profile=work --tags lazyvim
 #
-# Available tags: packages, lazyvim, dotfiles, work, private
+# Available tags: packages, brew, lazyvim, dotfiles, work, private
 
 - name: Bootstrap machine
   hosts: localhost
@@ -39,5 +39,5 @@
       tags: [private]
       when: profile == 'private'
 
-    - role: chezmoi
-      tags: [dotfiles, lazyvim]
+    - role: dotfiles
+      tags: [dotfiles]

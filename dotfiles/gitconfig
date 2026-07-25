@@ -1,0 +1,31 @@
+[user]
+    name  = see ~/.gitconfig.local
+    email = see ~/.gitconfig.local
+
+[include]
+    path = ~/.gitconfig.local
+
+[core]
+    editor     = nvim
+    autocrlf   = input
+    pager      = delta
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[delta]
+    navigate     = true
+    line-numbers = true
+    side-by-side = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
