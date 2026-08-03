@@ -17,7 +17,7 @@ export EDITOR=nvim
 export GIT_EDITOR=nvim
 
 # ── Theme ─────────────────────────────────────────────────────────────────────
-ZSH_THEME="powerline"
+ZSH_THEME="intheloop"
 
 # ── Plugins ───────────────────────────────────────────────────────────────────
 plugins=(
@@ -26,7 +26,6 @@ plugins=(
   zsh-syntax-highlighting
   fzf
   asdf
-  pet
 )
 
 source $ZSH/oh-my-zsh.sh
