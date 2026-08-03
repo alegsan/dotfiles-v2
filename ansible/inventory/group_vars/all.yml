@@ -36,6 +36,8 @@ brew_packages:
   - asdf
   - node
   - delta
+  - pet
+  - direnv
 
 brew_casks:
   - font-iosevka-nerd-font
@@ -43,3 +45,7 @@ brew_casks:
 # Neovim via asdf (nightly)
 asdf_bin: "{{ brew_prefix }}/bin/asdf"
 neovim_bin_dir: "{{ lookup('env', 'HOME') }}/.local/bin"
+
+# oh-my-zsh
+zsh_home: "{{ lookup('env', 'HOME') }}/.oh-my-zsh"
+zsh_plugins: "{{ zsh_home }}/custom/plugins"

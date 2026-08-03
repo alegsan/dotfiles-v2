@@ -31,6 +31,9 @@
     - role: neovim
       tags: [lazyvim, packages]
 
+    - role: zsh
+      tags: [zsh, packages]
+
     - role: work
       tags: [work]
       when: profile == 'work'

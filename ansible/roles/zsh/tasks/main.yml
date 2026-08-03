@@ -1,0 +1,90 @@
+---
+# roles/zsh/tasks/main.yml
+# Installs oh-my-zsh + plugins, sets up prompt/theme and symlinks zsh config.
+# Used by the `zsh` tags.
+
+- name: Install zsh + powerline fonts
+  ansible.builtin.apt:
+    name:
+      - zsh
+      - fonts-powerline
+    state: present
+  become: true
+  tags: zsh
+
+- name: Clone oh-my-zsh
+  ansible.builtin.git: # noqa: latest[git]
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+    dest: "{{ zsh_home }}"
+    depth: 1
+  become: false
+  tags: zsh
+
+- name: Install zsh-autosuggestions plugin
+  ansible.builtin.git: # noqa: latest[git]
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: "{{ zsh_plugins }}/zsh-autosuggestions"
+    depth: 1
+  become: false
+  tags: zsh
+
+- name: Install zsh-syntax-highlighting plugin
+  ansible.builtin.git: # noqa: latest[git]
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+    dest: "{{ zsh_plugins }}/zsh-syntax-highlighting"
+    depth: 1
+  become: false
+  tags: zsh
+
+- name: Ensure oh-my-zsh custom themes dir
+  ansible.builtin.file:
+    path: "{{ zsh_home }}/custom/themes"
+    state: directory
+    mode: "0755"
+  become: false
+  tags: zsh
+
+- name: Symlink powerline theme into oh-my-zsh
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/zsh/theme-powerline.zsh-theme"
+    dest: "{{ zsh_home }}/custom/themes/powerline.zsh-theme"
+    state: link
+    force: true
+  become: false
+  tags: zsh
+
+- name: Symlink zsh aliases into oh-my-zsh custom
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/zsh/aliases.zsh"
+    dest: "{{ zsh_home }}/custom/aliases.zsh"
+    state: link
+    force: true
+  become: false
+  tags: zsh
+
+- name: Symlink work-specific zsh aliases into oh-my-zsh custom
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/work/zsh/aliases-work.zsh"
+    dest: "{{ zsh_home }}/custom/aliases-work.zsh"
+    state: link
+    force: true
+  become: false
+  tags: zsh
+  when: profile == 'work'
+
+- name: Symlink profile-specific ~/.zshenv
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/{{ profile }}/zsh/zshenv"
+    dest: "{{ lookup('env', 'HOME') }}/.zshenv"
+    state: link
+    force: true
+  become: false
+  tags: zsh
+  when: profile in ['work', 'private']
+
+- name: Set zsh as default shell
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    shell: /usr/bin/zsh
+  become: true
+  tags: zsh
