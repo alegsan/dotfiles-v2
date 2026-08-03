@@ -14,6 +14,13 @@
   become: true
   tags: lazyvim
 
+- name: Remove apt neovim (neovim managed via asdf nightly)
+  ansible.builtin.apt:
+    name: neovim
+    state: absent
+  become: true
+  tags: lazyvim
+
 - name: Add asdf neovim plugin
   ansible.builtin.command: "{{ asdf_bin }} plugin add neovim https://github.com/richin13/asdf-neovim"
   environment:
