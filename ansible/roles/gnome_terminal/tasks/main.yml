@@ -46,4 +46,5 @@
 - name: Apply theme and settings
   ansible.builtin.command: /tmp/gnome-terminal.sh "{{ gnome_terminal_theme }}"
   when: gnome_terminal_theme_check.stdout != "found"
+  changed_when: true
   tags: gnome_terminal
