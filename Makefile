@@ -24,5 +24,8 @@ brew: ## Only install Homebrew + brew packages
 packages: ## Only install apt packages
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages
 
+gnome_terminal: ## Install and configure GNOME Terminal
+	ansible-playbook $(PLAYBOOK) -K --tags gnome_terminal
+
 lint: ## Lint ansible playbooks
 	ansible-lint $(PLAYBOOK)
