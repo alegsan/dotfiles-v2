@@ -19,7 +19,7 @@
           - profile is defined
           - profile in ['work', 'private']
         fail_msg: "profile must be 'work' or 'private'. Pass with: -e profile=work"
-      tags: always
+      tags: [work, private]
 
   roles:
     - role: common
