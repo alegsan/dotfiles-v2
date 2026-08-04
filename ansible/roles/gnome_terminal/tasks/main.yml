@@ -1,0 +1,49 @@
+---
+# roles/gnome_terminal/tasks/main.yml — Install and configure GNOME Terminal
+
+- name: Install GNOME Terminal dependencies
+  ansible.builtin.apt:
+    name:
+      - dconf-cli
+      - uuid-runtime
+    state: present
+  become: true
+  tags: gnome_terminal
+
+- name: Install UbuntuSansMono Nerd Font via brew cask
+  community.general.homebrew_cask:
+    name: "{{ gnome_terminal_font_cask }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  tags: gnome_terminal
+
+- name: Check if theme is already installed
+  ansible.builtin.shell: |
+    set -o pipefail
+    list=$(gsettings get org.gnome.Terminal.ProfilesList list | tr -d "[],' ")
+    for uuid in $list; do
+      name=$(gsettings get "org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${uuid}/" \
+        visible-name 2>/dev/null | tr -d "'")
+      [ "$name" = "{{ gnome_terminal_theme }}" ] && echo "found" && exit 0
+    done
+    echo "not_found"
+  register: gnome_terminal_theme_check
+  changed_when: false
+  failed_when: false
+  tags: gnome_terminal
+
+- name: Copy gnome-terminal setup script
+  ansible.builtin.copy:
+    src: gnome-terminal.sh
+    dest: /tmp/gnome-terminal.sh
+    mode: "0755"
+  when: gnome_terminal_theme_check.stdout != "found"
+  tags: gnome_terminal
+
+- name: Apply theme and settings
+  ansible.builtin.command: /tmp/gnome-terminal.sh "{{ gnome_terminal_theme }}"
+  when: gnome_terminal_theme_check.stdout != "found"
+  tags: gnome_terminal
