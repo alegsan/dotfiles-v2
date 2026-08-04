@@ -149,9 +149,12 @@ set_installed_theme_as_default_and_cleanup() {
 
 # Function to set GNOME Terminal settings
 set_terminal_settings() {
+	local uuid
+	uuid=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
 	for setting in "${SETTINGS[@]}"; do
-		if ! gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:"$(gsettings get \
-			org.gnome.Terminal.ProfilesList default | tr -d "'")"/ ${setting}; then
+		if ! eval "gsettings set \
+			'org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${uuid}/' \
+			${setting}"; then
 			log_error "Failed to set GNOME Terminal setting: ${setting}"
 			return 1
 		fi
