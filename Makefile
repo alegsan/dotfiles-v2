@@ -31,4 +31,6 @@ gnome_terminal: ## Install and configure GNOME Terminal
 	ansible-playbook $(PLAYBOOK) -K --tags gnome_terminal
 
 lint: ## Lint ansible playbooks
+	@command -v ansible-lint >/dev/null 2>&1 || \
+		{ echo "\033[1;31m[error]\033[0m ansible-lint not found. Run 'make packages PROFILE=work' or 'make packages PROFILE=private' first."; exit 1; }
 	ansible-lint $(PLAYBOOK)

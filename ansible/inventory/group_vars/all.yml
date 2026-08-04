@@ -6,6 +6,7 @@ dotfiles_dir: "{{ repo_dir }}/dotfiles"
 # Base apt packages installed on every machine
 common_packages:
   - make
+  - ansible-lint
   - git
   - curl
   - wget
