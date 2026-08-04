@@ -1,3 +1,5 @@
+export PATH := $(HOME)/.local/bin:$(PATH)
+
 DOTFILES_DIR := $(shell pwd)
 ANSIBLE_DIR  := $(DOTFILES_DIR)/ansible
 PLAYBOOK     := $(ANSIBLE_DIR)/playbooks/main.yml
