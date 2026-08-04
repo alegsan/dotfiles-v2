@@ -2,4 +2,4 @@
 # roles/gnome_terminal/defaults/main.yml
 
 gnome_terminal_theme: "Ayu Dark"
-gnome_terminal_font_cask: "font-ubuntu-sans-mono-nerd-font"
+gnome_terminal_font_cask: "font-ubuntu-sans-nerd-font"
