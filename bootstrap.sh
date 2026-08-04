@@ -47,8 +47,8 @@ run() {
 log "Updating package index..."
 run sudo apt-get update -qq
 
-log "Installing git, curl, software-properties-common..."
-run sudo apt-get install -y -qq git curl software-properties-common
+log "Installing git, curl, make, software-properties-common..."
+run sudo apt-get install -y -qq git curl make software-properties-common
 
 # ─── Ansible ───────────────────────────────────────────────────────────────────
 if ! command -v ansible &>/dev/null; then
