@@ -13,20 +13,12 @@
 
 set -euo pipefail
 
-# ─── Locale ───────────────────────────────────────────────────────────────────
-log "Configuring locale (en_US.UTF-8)..."
-run sudo apt-get install -y -qq locales
-run sudo locale-gen en_US.UTF-8 de_DE.UTF-8
-run sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# ─── Ansible ─────────────────────────────────────────────────────────────────
+# ─── Defaults ─────────────────────────────────────────────────────────────────
 REPO_URL="${DOTFILES_REPO:-https://github.com/alegsan/dotfiles-v2.git}"
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.dotfiles}"
 VERBOSE=0
 
-# ─── Args ──────────────────────────────────────────────────────────────────────
+# ─── Args ───────────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
   case $1 in
     -v|--verbose) VERBOSE=1; shift ;;
@@ -51,7 +43,15 @@ run() {
 
 [[ "$(id -u)" -eq 0 ]] && die "Do not run as root. Script uses sudo internally."
 
-# ─── System prerequisites ─────────────────────────────────────────────────────
+# ─── Locale ───────────────────────────────────────────────────────────────────
+log "Configuring locales (en_US.UTF-8, de_DE.UTF-8)..."
+run sudo apt-get install -y -qq locales
+run sudo locale-gen en_US.UTF-8 de_DE.UTF-8
+run sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# ─── System prerequisites ───────────────────────────────────────────────────────────
 log "Updating package index..."
 run sudo apt-get update -qq
 
@@ -67,7 +67,7 @@ else
   warn "ansible already installed: $(ansible --version | head -1)"
 fi
 
-# ─── Clone / update dotfiles repo ─────────────────────────────────────────────
+# ─── Clone / update dotfiles repo ───────────────────────────────────────────────────────────
 if [[ -d "$DOTFILES_DIR/.git" ]]; then
   warn "Pulling latest into $DOTFILES_DIR..."
   run git -C "$DOTFILES_DIR" pull --ff-only
@@ -76,11 +76,11 @@ else
   run git clone "$REPO_URL" "$DOTFILES_DIR"
 fi
 
-# ─── Ansible collections ───────────────────────────────────────────────────────
+# ─── Ansible collections ──────────────────────────────────────────────────────────────────
 log "Installing Ansible collections (community.general)..."
 run ansible-galaxy collection install -r "$DOTFILES_DIR/ansible/requirements.yml"
 
-# ─── Done ─────────────────────────────────────────────────────────────────────
+# ─── Done ───────────────────────────────────────────────────────────────────
 log "Bootstrap done. Ansible + repo ready."
 log "Next: cd $DOTFILES_DIR && make install PROFILE=work"
 if [[ $VERBOSE -eq 1 ]]; then
