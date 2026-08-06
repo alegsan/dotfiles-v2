@@ -18,6 +18,24 @@
   become: false
   tags: zsh
 
+- name: Symlink ~/.zshrc from dotfiles repo
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/zshrc"
+    dest: "{{ lookup('env', 'HOME') }}/.zshrc"
+    state: link
+    force: true
+  become: false
+  tags: zsh
+
+- name: Write ~/.zshrc.local (profile-specific env)
+  ansible.builtin.template:
+    src: zshrc.local.j2
+    dest: "{{ lookup('env', 'HOME') }}/.zshrc.local"
+    mode: "0644"
+    force: false
+  become: false
+  tags: zsh
+
 - name: Install oh-my-zsh plugins
   ansible.builtin.git: # noqa: latest[git]
     repo: "{{ item.repo }}"
@@ -73,15 +91,6 @@
   become: false
   tags: zsh
   when: profile in ['work', 'private']
-
-- name: Set ZSH_THEME to powerline in ~/.zshrc
-  ansible.builtin.lineinfile:
-    path: "{{ lookup('env', 'HOME') }}/.zshrc"
-    regexp: "^ZSH_THEME="
-    line: 'ZSH_THEME="{{ zsh_theme }}"'
-    create: false
-  become: false
-  tags: zsh
 
 - name: Set zsh as default shell
   ansible.builtin.user:

@@ -69,15 +69,6 @@
 
 # ── Common dotfiles ───────────────────────────────────────────────────────────
 
-- name: Symlink ~/.zshrc
-  ansible.builtin.file:
-    src: "{{ dotfiles_dir }}/zshrc"
-    dest: "{{ lookup('env', 'HOME') }}/.zshrc"
-    state: link
-    force: true
-  become: false
-  tags: dotfiles
-
 - name: Symlink ~/.gitconfig
   ansible.builtin.file:
     src: "{{ dotfiles_dir }}/gitconfig"
@@ -140,15 +131,6 @@
     src: gitconfig.local.j2
     dest: "{{ lookup('env', 'HOME') }}/.gitconfig.local"
     mode: "0600"
-    force: false
-  become: false
-  tags: dotfiles
-
-- name: Write ~/.zshrc.local (profile-specific env)
-  ansible.builtin.template:
-    src: zshrc.local.j2
-    dest: "{{ lookup('env', 'HOME') }}/.zshrc.local"
-    mode: "0644"
     force: false
   become: false
   tags: dotfiles
