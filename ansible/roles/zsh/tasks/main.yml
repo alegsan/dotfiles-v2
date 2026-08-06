@@ -45,23 +45,6 @@
   become: false
   tags: zsh
 
-- name: Ensure oh-my-zsh custom themes dir
-  ansible.builtin.file:
-    path: "{{ zsh_home }}/custom/themes"
-    state: directory
-    mode: "0755"
-  become: false
-  tags: zsh
-
-- name: Symlink powerline theme into oh-my-zsh
-  ansible.builtin.file:
-    src: "{{ dotfiles_dir }}/zsh/theme-powerline.zsh-theme"
-    dest: "{{ zsh_home }}/custom/themes/powerline.zsh-theme"
-    state: link
-    force: true
-  become: false
-  tags: zsh
-
 - name: Symlink zsh dotfiles into oh-my-zsh custom
   ansible.builtin.file:
     src: "{{ item.src }}"
