@@ -2,6 +2,28 @@
 # roles/common/tasks/main.yml — True base: apt cache, base packages, shell, ~/.local/bin
 # No dependencies. All other roles depend on this (directly or transitively).
 
+- name: Install locales package
+  ansible.builtin.apt:
+    name: locales
+    state: present
+    update_cache: true
+  become: true
+  tags: packages
+
+- name: Generate locales
+  community.general.locale_gen:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ common_locales }}"
+  become: true
+  tags: packages
+
+- name: Set system locale
+  ansible.builtin.command: update-locale LANG={{ common_locale }} LC_ALL={{ common_locale }}
+  become: true
+  changed_when: false
+  tags: packages
+
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true

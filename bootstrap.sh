@@ -13,7 +13,15 @@
 
 set -euo pipefail
 
-# ─── Defaults ─────────────────────────────────────────────────────────────────
+# ─── Locale ───────────────────────────────────────────────────────────────────
+log "Configuring locale (en_US.UTF-8)..."
+run sudo apt-get install -y -qq locales
+run sudo locale-gen en_US.UTF-8 de_DE.UTF-8
+run sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# ─── Ansible ─────────────────────────────────────────────────────────────────
 REPO_URL="${DOTFILES_REPO:-https://github.com/alegsan/dotfiles-v2.git}"
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.dotfiles}"
 VERBOSE=0

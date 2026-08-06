@@ -11,3 +11,10 @@ common_packages:
   - jq
   - tmux
   - python3-pip
+
+
+# Locales to generate — first entry becomes the system default
+common_locales:
+  - en_US.UTF-8
+  - de_DE.UTF-8
+common_locale: en_US.UTF-8
