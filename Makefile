@@ -15,22 +15,27 @@ install: ## Full setup for PROFILE (default: work). Usage: make install PROFILE=
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE)
 
 dotfiles: ## Only symlink dotfiles. Usage: make dotfiles PROFILE=private
-	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags dotfiles
+	# depends on: zsh (for ~/.zshrc symlink)
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,zsh,dotfiles
 
 lazyvim: ## Only install neovim + LazyVim deps
-	ansible-playbook $(PLAYBOOK) -K --tags lazyvim
+	# depends on: brew → common
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,lazyvim
 
 brew: ## Only install Homebrew + brew packages
-	ansible-playbook $(PLAYBOOK) -K --tags brew
+	# depends on: common
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew
 
 packages: ## Only install apt packages. Usage: make packages PROFILE=private
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages
 
-zsh: ## Only install zsh + oh-my-zsh. Usage: make zsh PROFILE=private
-	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags zsh
+zsh: ## Only install zsh + oh-my-zsh + starship. Usage: make zsh PROFILE=private
+	# depends on: brew → common
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,zsh
 
 gnome_terminal: ## Install and configure GNOME Terminal
-	ansible-playbook $(PLAYBOOK) -K --tags gnome_terminal
+	# depends on: brew → common
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,gnome_terminal
 
 lint: ## Lint ansible playbooks
 	@command -v ansible-lint >/dev/null 2>&1 || \

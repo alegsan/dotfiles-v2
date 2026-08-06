@@ -18,6 +18,23 @@
   become: false
   tags: zsh
 
+- name: Ensure ~/.config exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.config"
+    state: directory
+    mode: "0755"
+  become: false
+  tags: zsh
+
+- name: Symlink ~/.config/starship.toml
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/config/starship.toml"
+    dest: "{{ lookup('env', 'HOME') }}/.config/starship.toml"
+    state: link
+    force: true
+  become: false
+  tags: zsh
+
 - name: Symlink ~/.zshrc from dotfiles repo
   ansible.builtin.file:
     src: "{{ dotfiles_dir }}/zshrc"

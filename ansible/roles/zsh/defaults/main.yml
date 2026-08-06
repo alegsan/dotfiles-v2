@@ -6,7 +6,6 @@ zsh_plugins: "{{ zsh_home }}/custom/plugins"
 # Apt packages this role needs
 zsh_apt_packages:
   - zsh
-  - fonts-powerline
 
 # oh-my-zsh plugins to clone — add/remove here without touching tasks
 zsh_plugin_list:
