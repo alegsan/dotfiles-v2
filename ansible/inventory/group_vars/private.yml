@@ -1,13 +1,11 @@
 ---
+# Private profile vars
 # User identity — leave empty to be prompted on first Ansible run
 user_name: ""
 user_email: ""
 
-# Private machine specific packages
-profile_packages:
-  - vlc
-  # - steam           # uncomment for gaming setup
-  # - obs-studio
-
-# Private-specific vars
-# (add as needed)
+# Extra apt packages on top of roles/private/defaults/main.yml — private_apt_packages.
+# Uncomment and add personal tooling here.
+profile_packages: []
+#  - steam
+#  - obs-studio

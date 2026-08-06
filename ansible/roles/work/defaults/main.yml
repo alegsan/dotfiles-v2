@@ -1,0 +1,6 @@
+---
+# Work-specific apt packages.
+# Override or extend via inventory/group_vars/work.yml → profile_packages.
+work_apt_packages:
+  - docker.io
+  - docker-compose

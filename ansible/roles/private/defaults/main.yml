@@ -1,0 +1,5 @@
+---
+# Private machine apt packages.
+# Override or extend via inventory/group_vars/private.yml → profile_packages.
+private_apt_packages:
+  - vlc

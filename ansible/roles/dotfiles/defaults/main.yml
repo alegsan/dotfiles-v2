@@ -1,0 +1,4 @@
+---
+# Dotfiles repo location
+repo_dir: "{{ lookup('env', 'HOME') }}/.dotfiles"
+dotfiles_dir: "{{ repo_dir }}/dotfiles"

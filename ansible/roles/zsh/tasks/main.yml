@@ -1,13 +1,11 @@
 ---
 # roles/zsh/tasks/main.yml
 # Installs oh-my-zsh + plugins, sets up prompt/theme and symlinks zsh config.
-# Used by the `zsh` tags.
+# Depends on: common (declared in meta/main.yml) — zsh + fonts-powerline installed here.
 
-- name: Install zsh + powerline fonts
+- name: Install zsh apt packages
   ansible.builtin.apt:
-    name:
-      - zsh
-      - fonts-powerline
+    name: "{{ zsh_apt_packages }}"
     state: present
   become: true
   tags: zsh

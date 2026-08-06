@@ -1,13 +1,13 @@
 ---
 # roles/private/tasks/main.yml — Personal machine setup
+# Depends on: common (declared in meta/main.yml)
 
-# Example: enable flatpak
-# - name: Install flatpak
-#   ansible.builtin.apt:
-#     name: flatpak
-#     state: present
-#   become: true
-#   tags: private
+- name: Install private apt packages
+  ansible.builtin.apt:
+    name: "{{ private_apt_packages + (profile_packages | default([])) }}"
+    state: present
+  become: true
+  tags: private
 
 - name: Private role placeholder
   ansible.builtin.debug:

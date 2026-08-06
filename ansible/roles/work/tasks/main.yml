@@ -1,6 +1,13 @@
 ---
 # roles/work/tasks/main.yml — Company-specific setup
-# Add tasks for: corp CA certs, proxy config, VPN, internal tools, etc.
+# Depends on: common (declared in meta/main.yml)
+
+- name: Install work apt packages
+  ansible.builtin.apt:
+    name: "{{ work_apt_packages + (profile_packages | default([])) }}"
+    state: present
+  become: true
+  tags: work
 
 - name: Add current user to docker group
   ansible.builtin.user:
@@ -19,8 +26,3 @@
 #   become: true
 #   notify: Update CA certificates
 #   tags: work
-
-# handlers:
-#   - name: Update CA certificates
-#     ansible.builtin.command: update-ca-certificates
-#     become: true

@@ -1,5 +1,6 @@
 ---
-# roles/common/tasks/main.yml — Base packages + zsh setup
+# roles/common/tasks/main.yml — True base: apt cache, base packages, shell, ~/.local/bin
+# No dependencies. All other roles depend on this (directly or transitively).
 
 - name: Update apt cache
   ansible.builtin.apt:
@@ -13,29 +14,6 @@
     name: "{{ common_packages }}"
     state: present
   become: true
-  tags: packages
-
-- name: Install profile-specific packages
-  ansible.builtin.apt:
-    name: "{{ profile_packages | default([]) }}"
-    state: present
-  become: true
-  tags: packages
-  when: profile_packages is defined and profile_packages | length > 0
-
-- name: Remove apt ansible-lint (incompatible with PPA ansible)
-  ansible.builtin.apt:
-    name: ansible-lint
-    state: absent
-  become: true
-  tags: packages
-
-- name: Install ansible-lint via pip
-  ansible.builtin.pip:
-    name: ansible-lint
-    state: present
-    extra_args: --break-system-packages
-  become: false
   tags: packages
 
 - name: Set zsh as default shell

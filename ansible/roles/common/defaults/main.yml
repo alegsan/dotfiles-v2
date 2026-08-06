@@ -1,0 +1,13 @@
+---
+# True base packages — needed on every machine regardless of profile.
+# Everything else belongs in the role that actually uses it.
+common_packages:
+  - make
+  - git
+  - curl
+  - wget
+  - build-essential
+  - unzip
+  - jq
+  - tmux
+  - python3-pip

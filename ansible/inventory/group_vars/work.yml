@@ -1,15 +1,14 @@
 ---
+# Work profile vars
 # User identity — leave empty to be prompted on first Ansible run
 user_name: ""
 user_email: ""
 
-# Work-machine specific packages
-# Add company tooling here (kubectl, docker, VPN clients, corp CA certs, etc.)
-profile_packages:
-  - docker.io
-  - docker-compose
-  # - kubectl         # uncomment + add task for proper kubectl install
-  # - openvpn         # example VPN client
+# Extra apt packages on top of roles/work/defaults/main.yml — work_apt_packages.
+# Uncomment and add company tooling here.
+profile_packages: []
+#  - kubectl
+#  - openvpn
 
 # Work-specific vars
 # work_proxy: "http://proxy.company.com:8080"

@@ -1,16 +1,13 @@
 ---
 # roles/neovim/tasks/main.yml
 # Installs neovim nightly via asdf (which is installed via Homebrew).
-# Requires: brew role has run first.
+# Depends on: brew (declared in meta/main.yml) → which depends on common.
 # NOTE: become: false on all user-level tasks — asdf/neovim must install into user home.
 
-- name: Ensure ~/.local/bin exists (owned by user)
-  ansible.builtin.file:
-    path: "{{ neovim_bin_dir }}"
-    state: directory
-    mode: "0755"
-    owner: "{{ ansible_facts['user_id'] }}"
-    group: "{{ ansible_facts['user_id'] }}"
+- name: Install neovim apt dependencies
+  ansible.builtin.apt:
+    name: "{{ neovim_apt_packages }}"
+    state: present
   become: true
   tags: lazyvim
 
@@ -79,16 +76,9 @@
   become: false
   tags: lazyvim
 
-- name: Install luarocks (apt) + build deps
+- name: Install pkg-config (apt) — not in common, needed for luarocks builds
   ansible.builtin.apt:
-    name:
-      - luarocks
-      - build-essential
-      - pkg-config
-      - ripgrep
-      - fd-find
-      - xclip
-      - python3-pynvim
+    name: pkg-config
     state: present
   become: true
   tags: lazyvim
@@ -110,13 +100,6 @@
   args:
     creates: "{{ lookup('env', 'HOME') }}/.luarocks/lib/luarocks/rocks-5.1/tiktoken_core"
   become: false
-  tags: lazyvim
-
-- name: Install nodejs + npm (apt) for build tools only
-  ansible.builtin.apt:
-    name: [nodejs, npm]
-    state: present
-  become: true
   tags: lazyvim
 
 - name: Install neovim npm package (node provider) via brew node
