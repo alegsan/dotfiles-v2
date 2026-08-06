@@ -74,6 +74,15 @@
   tags: zsh
   when: profile in ['work', 'private']
 
+- name: Set ZSH_THEME to powerline in ~/.zshrc
+  ansible.builtin.lineinfile:
+    path: "{{ lookup('env', 'HOME') }}/.zshrc"
+    regexp: "^ZSH_THEME="
+    line: 'ZSH_THEME="{{ zsh_theme }}"'
+    create: false
+  become: false
+  tags: zsh
+
 - name: Set zsh as default shell
   ansible.builtin.user:
     name: "{{ ansible_facts['user_id'] }}"

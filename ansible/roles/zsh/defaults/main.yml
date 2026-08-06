@@ -1,4 +1,7 @@
 ---
+# Theme to activate in ~/.zshrc
+zsh_theme: powerline
+
 # oh-my-zsh paths
 zsh_home: "{{ lookup('env', 'HOME') }}/.oh-my-zsh"
 zsh_plugins: "{{ zsh_home }}/custom/plugins"
