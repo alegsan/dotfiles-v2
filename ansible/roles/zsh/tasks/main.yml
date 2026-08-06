@@ -1,7 +1,7 @@
 ---
 # roles/zsh/tasks/main.yml
 # Installs oh-my-zsh + plugins, sets up prompt/theme and symlinks zsh config.
-# Depends on: common (declared in meta/main.yml) — zsh + fonts-powerline installed here.
+# Depends on: common (declared in meta/main.yml) — provides git.
 
 - name: Install zsh apt packages
   ansible.builtin.apt:
@@ -18,19 +18,12 @@
   become: false
   tags: zsh
 
-- name: Install zsh-autosuggestions plugin
+- name: Install oh-my-zsh plugins
   ansible.builtin.git: # noqa: latest[git]
-    repo: https://github.com/zsh-users/zsh-autosuggestions
-    dest: "{{ zsh_plugins }}/zsh-autosuggestions"
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
     depth: 1
-  become: false
-  tags: zsh
-
-- name: Install zsh-syntax-highlighting plugin
-  ansible.builtin.git: # noqa: latest[git]
-    repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-    dest: "{{ zsh_plugins }}/zsh-syntax-highlighting"
-    depth: 1
+  loop: "{{ zsh_plugin_list }}"
   become: false
   tags: zsh
 
@@ -51,12 +44,13 @@
   become: false
   tags: zsh
 
-- name: Symlink zsh aliases into oh-my-zsh custom
+- name: Symlink zsh dotfiles into oh-my-zsh custom
   ansible.builtin.file:
-    src: "{{ dotfiles_dir }}/zsh/aliases.zsh"
-    dest: "{{ zsh_home }}/custom/aliases.zsh"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     state: link
     force: true
+  loop: "{{ zsh_symlinks }}"
   become: false
   tags: zsh
 

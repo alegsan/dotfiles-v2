@@ -2,3 +2,7 @@
 # Shared inventory vars.
 # Role-specific vars (packages, paths) live in each role's defaults/main.yml.
 # Profile-specific vars live in group_vars/work.yml and group_vars/private.yml.
+
+# Dotfiles repo location — shared across zsh, dotfiles and other roles.
+repo_dir: "{{ lookup('env', 'HOME') }}/.dotfiles"
+dotfiles_dir: "{{ repo_dir }}/dotfiles"

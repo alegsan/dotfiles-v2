@@ -16,13 +16,6 @@
   become: true
   tags: packages
 
-- name: Set zsh as default shell
-  ansible.builtin.user:
-    name: "{{ ansible_facts['user_id'] }}"
-    shell: /usr/bin/zsh
-  become: true
-  tags: packages
-
 - name: Ensure ~/.local/bin exists (owned by user)
   ansible.builtin.file:
     path: "{{ lookup('env', 'HOME') }}/.local/bin"

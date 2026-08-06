@@ -7,3 +7,15 @@ zsh_plugins: "{{ zsh_home }}/custom/plugins"
 zsh_apt_packages:
   - zsh
   - fonts-powerline
+
+# oh-my-zsh plugins to clone — add/remove here without touching tasks
+zsh_plugin_list:
+  - repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: "{{ zsh_plugins }}/zsh-autosuggestions"
+  - repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+    dest: "{{ zsh_plugins }}/zsh-syntax-highlighting"
+
+# Common dotfile symlinks — src relative to dotfiles_dir
+zsh_symlinks:
+  - src: "{{ dotfiles_dir }}/zsh/aliases.zsh"
+    dest: "{{ zsh_home }}/custom/aliases.zsh"

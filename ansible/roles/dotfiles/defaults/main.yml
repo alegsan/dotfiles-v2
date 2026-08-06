@@ -1,4 +1,2 @@
 ---
-# Dotfiles repo location
-repo_dir: "{{ lookup('env', 'HOME') }}/.dotfiles"
-dotfiles_dir: "{{ repo_dir }}/dotfiles"
+# dotfiles_dir and repo_dir are shared vars — defined in group_vars/all.yml
