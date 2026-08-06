@@ -16,6 +16,10 @@ export ZSH="$HOME/.oh-my-zsh"
 export EDITOR=nvim
 export GIT_EDITOR=nvim
 
+# ── fzf ──────────────────────────────────────────────────────────────────────
+# Must be set before oh-my-zsh loads the fzf plugin
+[ -d "/home/linuxbrew/.linuxbrew/opt/fzf" ] && export FZF_BASE="/home/linuxbrew/.linuxbrew/opt/fzf"
+
 # ── Theme ─────────────────────────────────────────────────────────────────────
 ZSH_THEME="intheloop"
 
