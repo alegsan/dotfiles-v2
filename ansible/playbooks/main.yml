@@ -45,5 +45,8 @@
     - role: gnome_terminal
       tags: [gnome_terminal]
 
+    - role: tools
+      tags: [tools]
+
     - role: dotfiles
       tags: [dotfiles]

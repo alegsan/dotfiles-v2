@@ -30,28 +30,6 @@
   changed_when: false
   tags: brew
 
-- name: Install brew packages
-  community.general.homebrew:
-    name: "{{ brew_packages }}"
-    state: present
-    path: "{{ brew_prefix }}/bin"
-  become: false
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
-  tags: brew
-
-- name: Install brew casks (fonts)
-  community.general.homebrew_cask:
-    name: "{{ brew_casks }}"
-    state: present
-    path: "{{ brew_prefix }}/bin"
-  become: false
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
-  register: brew_cask_result
-  failed_when: false   # cask installs can fail on headless machines
-  tags: brew
-
 - name: Ensure brew shellenv in ~/.profile
   ansible.builtin.blockinfile:
     path: "{{ lookup('env', 'HOME') }}/.profile"

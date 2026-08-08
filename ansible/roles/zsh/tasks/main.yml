@@ -3,6 +3,27 @@
 # Installs oh-my-zsh + plugins, sets up prompt/theme and symlinks zsh config.
 # Depends on: common (declared in meta/main.yml) — provides git.
 
+- name: Install zsh brew packages
+  community.general.homebrew:
+    name: "{{ zsh_brew_packages }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  tags: zsh
+
+- name: Install zsh brew casks (fonts)
+  community.general.homebrew_cask:
+    name: "{{ zsh_brew_casks }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  failed_when: false
+  tags: zsh
+
 - name: Install zsh apt packages
   ansible.builtin.apt:
     name: "{{ zsh_apt_packages }}"

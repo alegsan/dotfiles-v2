@@ -11,6 +11,7 @@ common_packages:
   - jq
   - tmux
   - python3-pip
+  - xclip
 
 
 # Locales to generate — first entry becomes the system default

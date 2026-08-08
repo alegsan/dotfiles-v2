@@ -1,0 +1,6 @@
+---
+# General CLI tools — not required by any specific role.
+# Add personal tools here.
+tools_brew_packages:
+  - gh
+  - lynx

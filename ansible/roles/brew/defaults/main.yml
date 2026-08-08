@@ -2,19 +2,3 @@
 # Linuxbrew paths
 brew_prefix: "/home/linuxbrew/.linuxbrew"
 brew_bin: "{{ brew_prefix }}/bin/brew"
-
-# Brew packages (newer versions than apt provides)
-brew_packages:
-  - fzf
-  - lazygit
-  - gh
-  - lynx
-  - asdf
-  - node
-  - delta
-  - pet
-  - direnv
-  - starship
-
-brew_casks:
-  - font-iosevka-nerd-font

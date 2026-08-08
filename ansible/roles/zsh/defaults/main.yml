@@ -7,6 +7,18 @@ zsh_plugins: "{{ zsh_home }}/custom/plugins"
 zsh_apt_packages:
   - zsh
 
+# Brew packages this role needs
+zsh_brew_packages:
+  - fzf
+  - asdf
+  - starship
+  - pet
+  - direnv
+
+# Brew casks this role needs
+zsh_brew_casks:
+  - font-iosevka-nerd-font
+
 # oh-my-zsh plugins to clone — add/remove here without touching tasks
 zsh_plugin_list:
   - repo: https://github.com/zsh-users/zsh-autosuggestions

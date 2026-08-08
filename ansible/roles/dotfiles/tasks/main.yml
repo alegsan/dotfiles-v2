@@ -5,6 +5,16 @@
 
 # ── User identity (local facts) ───────────────────────────────────────────────
 
+- name: Install dotfiles brew packages
+  community.general.homebrew:
+    name: "{{ dotfiles_brew_packages }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  tags: dotfiles
+
 - name: Ensure /etc/ansible/facts.d exists
   ansible.builtin.file:
     path: /etc/ansible/facts.d

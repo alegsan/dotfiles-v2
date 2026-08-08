@@ -1,2 +1,6 @@
 ---
 # dotfiles_dir and repo_dir are shared vars — defined in group_vars/all.yml
+
+# Brew packages this role needs
+dotfiles_brew_packages:
+  - delta

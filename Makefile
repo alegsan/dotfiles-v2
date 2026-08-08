@@ -33,6 +33,10 @@ zsh: ## Only install zsh + oh-my-zsh + starship. Usage: make zsh PROFILE=private
 	# depends on: brew → common
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,zsh
 
+tools: ## Install general CLI tools (gh, lynx, ...). Usage: make tools PROFILE=work
+	# depends on: brew → common
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,tools
+
 gnome_terminal: ## Install and configure GNOME Terminal
 	# depends on: brew → common
 	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags packages,brew,gnome_terminal

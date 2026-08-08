@@ -5,13 +5,17 @@ asdf_bin: "{{ brew_prefix }}/bin/asdf"
 # Where to symlink nvim binary
 neovim_bin_dir: "{{ lookup('env', 'HOME') }}/.local/bin"
 
+# Brew packages this role needs
+neovim_brew_packages:
+  - asdf
+  - rust
+  - node
+  - lazygit
+
 # Apt packages required by neovim and its plugins
 neovim_apt_packages:
   - luarocks
   - pkg-config
   - ripgrep
   - fd-find
-  - xclip
-  - nodejs
-  - npm
   - python3-pynvim

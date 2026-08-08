@@ -4,6 +4,16 @@
 # Depends on: brew (declared in meta/main.yml) → which depends on common.
 # NOTE: become: false on all user-level tasks — asdf/neovim must install into user home.
 
+- name: Install neovim brew packages
+  community.general.homebrew:
+    name: "{{ neovim_brew_packages }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  tags: lazyvim
+
 - name: Install neovim apt dependencies
   ansible.builtin.apt:
     name: "{{ neovim_apt_packages }}"
@@ -74,23 +84,6 @@
     create: true
     mode: "0644"
   become: false
-  tags: lazyvim
-
-- name: Install pkg-config (apt) — not in common, needed for luarocks builds
-  ansible.builtin.apt:
-    name: pkg-config
-    state: present
-  become: true
-  tags: lazyvim
-
-- name: Install rust via brew
-  community.general.homebrew:
-    name: rust
-    state: present
-    path: "{{ brew_prefix }}/bin"
-  become: false
-  environment:
-    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
   tags: lazyvim
 
 - name: Install luarocks tiktoken_core (for codecompanion)

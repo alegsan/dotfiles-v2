@@ -1,0 +1,13 @@
+---
+# roles/tools/tasks/main.yml — General CLI tools not tied to any specific role.
+# Depends on: brew (declared in meta/main.yml)
+
+- name: Install general CLI tools via brew
+  community.general.homebrew:
+    name: "{{ tools_brew_packages }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  tags: tools
