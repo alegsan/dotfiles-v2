@@ -1,6 +1,6 @@
 ---
 # roles/tools/tasks/main.yml — General CLI tools not tied to any specific role.
-# Depends on: brew (declared in meta/main.yml)
+# Depends on: brew (listed before this role in playbook)
 
 - name: Install general CLI tools via brew
   community.general.homebrew:

@@ -1,6 +1,6 @@
 ---
 # roles/work/tasks/main.yml — Company-specific setup
-# Depends on: common (declared in meta/main.yml)
+# Depends on: common (listed before this role in playbook)
 
 - name: Install work apt packages
   ansible.builtin.apt:
