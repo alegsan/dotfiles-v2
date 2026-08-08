@@ -8,7 +8,7 @@
     state: present
     update_cache: true
   become: true
-  tags: packages
+  tags: common
 
 - name: Generate locales
   community.general.locale_gen:
@@ -16,27 +16,27 @@
     state: present
   loop: "{{ common_locales }}"
   become: true
-  tags: packages
+  tags: common
 
 - name: Set system locale
   ansible.builtin.command: update-locale LANG={{ common_locale }} LC_ALL={{ common_locale }}
   become: true
   changed_when: false
-  tags: packages
+  tags: common
 
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
   become: true
-  tags: packages
+  tags: common
 
 - name: Install common packages
   ansible.builtin.apt:
     name: "{{ common_packages }}"
     state: present
   become: true
-  tags: packages
+  tags: common
 
 - name: Ensure ~/.local/bin exists (owned by user)
   ansible.builtin.file:
@@ -46,4 +46,4 @@
     owner: "{{ ansible_facts['user_id'] }}"
     group: "{{ ansible_facts['user_id'] }}"
   become: true
-  tags: packages
+  tags: common

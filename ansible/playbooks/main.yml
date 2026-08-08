@@ -1,10 +1,19 @@
 ---
 # main.yml — Master playbook
-# Usage:
-#   ansible-playbook ansible/playbooks/main.yml -K -e profile=work
-#   ansible-playbook ansible/playbooks/main.yml -K -e profile=work --tags lazyvim
 #
-# Available tags: packages, brew, lazyvim, dotfiles, gnome_terminal, work, private
+# Always use make targets — they include the correct dependency tag chain.
+# Running --tags directly skips dependency role tasks (common, brew).
+#
+# Usage:
+#   make install PROFILE=work          # full setup
+#   make zsh     PROFILE=work          # zsh only  (runs: common,brew,zsh)
+#   make lazyvim PROFILE=work          # neovim    (runs: common,brew,lazyvim)
+#   make dotfiles PROFILE=work         # dotfiles  (runs: common,brew,zsh,dotfiles)
+#   make brew    PROFILE=work          # brew only (runs: common,brew)
+#   make tools   PROFILE=work          # CLI tools (runs: common,brew,tools)
+#   make gnome_terminal PROFILE=work   # terminal  (runs: common,brew,gnome_terminal)
+#
+# Available tags: common, brew, zsh, lazyvim, dotfiles, tools, gnome_terminal, work, private
 
 - name: Bootstrap machine
   hosts: localhost
@@ -19,20 +28,20 @@
           - profile is defined
           - profile in ['work', 'private']
         fail_msg: "profile must be 'work' or 'private'. Pass with: -e profile=work"
-      tags: [work, private]
+      tags: [always]
 
   roles:
     - role: common
-      tags: [packages]
+      tags: [common]
 
     - role: brew
-      tags: [brew, packages, lazyvim]
+      tags: [brew]
 
     - role: neovim
-      tags: [lazyvim, packages]
+      tags: [lazyvim]
 
     - role: zsh
-      tags: [zsh, packages]
+      tags: [zsh]
 
     - role: work
       tags: [work]
