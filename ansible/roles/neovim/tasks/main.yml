@@ -1,7 +1,7 @@
 ---
 # roles/neovim/tasks/main.yml
 # Installs neovim nightly via asdf (which is installed via Homebrew).
-# Depends on: brew (declared in meta/main.yml) → which depends on common.
+# Depends on: brew (listed before this role in playbook).
 # NOTE: become: false on all user-level tasks — asdf/neovim must install into user home.
 
 - name: Install neovim brew packages
