@@ -3,21 +3,21 @@
 asdf_bin: "{{ brew_prefix }}/bin/asdf"
 
 # Where to symlink nvim binary
-neovim_bin_dir: "{{ lookup('env', 'HOME') }}/.local/bin"
+lazyvim_bin_dir: "{{ lookup('env', 'HOME') }}/.local/bin"
 
 # Brew packages this role needs
-neovim_brew_packages:
+lazyvim_brew_packages:
   - asdf
   - rust
   - node
   - lazygit
 
 # Brew casks this role needs
-neovim_brew_casks:
+lazyvim_brew_casks:
   - font-ubuntu-sans-nerd-font
 
 # Apt packages required by neovim and its plugins
-neovim_apt_packages:
+lazyvim_apt_packages:
   - build-essential
   - luarocks
   - pkg-config
@@ -28,7 +28,7 @@ neovim_apt_packages:
 
 # Individual files to symlink from dotfiles repo into ~/.config/nvim
 # Directories are created automatically; files are symlinked.
-neovim_config_symlinks:
+lazyvim_config_symlinks:
   - src: "{{ dotfiles_dir }}/config/nvim/init.lua"
     dest: "{{ lookup('env', 'HOME') }}/.config/nvim/init.lua"
   - src: "{{ dotfiles_dir }}/config/nvim/stylua.toml"
@@ -59,7 +59,7 @@ neovim_config_symlinks:
     dest: "{{ lookup('env', 'HOME') }}/.config/nvim/lua/plugins/snacks.lua"
 
 # Directories to symlink wholesale (prompts, reviews — read-only by nvim)
-neovim_dir_symlinks:
+lazyvim_dir_symlinks:
   - src: "{{ dotfiles_dir }}/config/nvim/prompts"
     dest: "{{ lookup('env', 'HOME') }}/.config/nvim/prompts"
   - src: "{{ dotfiles_dir }}/config/nvim/reviews"

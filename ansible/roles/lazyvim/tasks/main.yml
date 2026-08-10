@@ -1,12 +1,12 @@
 ---
-# roles/neovim/tasks/main.yml
-# Installs neovim nightly via asdf (which is installed via Homebrew).
+# roles/lazyvim/tasks/main.yml
+# Installs neovim nightly via asdf + LazyVim config (via Homebrew/asdf).
 # Depends on: brew (listed before this role in playbook).
 # NOTE: become: false on all user-level tasks — asdf/neovim must install into user home.
 
 - name: Install neovim brew packages
   community.general.homebrew:
-    name: "{{ neovim_brew_packages }}"
+    name: "{{ lazyvim_brew_packages }}"
     state: present
     path: "{{ brew_prefix }}/bin"
   become: false
@@ -16,7 +16,7 @@
 
 - name: Install neovim brew casks (fonts)
   community.general.homebrew_cask:
-    name: "{{ neovim_brew_casks }}"
+    name: "{{ lazyvim_brew_casks }}"
     state: present
     path: "{{ brew_prefix }}/bin"
   become: false
@@ -27,7 +27,7 @@
 
 - name: Install neovim apt dependencies
   ansible.builtin.apt:
-    name: "{{ neovim_apt_packages }}"
+    name: "{{ lazyvim_apt_packages }}"
     state: present
   become: true
   tags: lazyvim
@@ -43,11 +43,11 @@
   ansible.builtin.command: "{{ asdf_bin }} plugin add neovim https://github.com/richin13/asdf-neovim"
   environment:
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
-  register: neovim_asdf_plugin_add
-  changed_when: "'already added' not in neovim_asdf_plugin_add.stderr"
+  register: lazyvim_asdf_plugin_add
+  changed_when: "'already added' not in lazyvim_asdf_plugin_add.stderr"
   failed_when:
-    - neovim_asdf_plugin_add.rc != 0
-    - "'already added' not in neovim_asdf_plugin_add.stderr"
+    - lazyvim_asdf_plugin_add.rc != 0
+    - "'already added' not in lazyvim_asdf_plugin_add.stderr"
   become: false
   tags: lazyvim
 
@@ -55,7 +55,7 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     asdf where neovim
-  register: neovim_asdf_nvim_where
+  register: lazyvim_asdf_nvim_where
   failed_when: false
   changed_when: false
   become: false
@@ -65,7 +65,7 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     asdf install neovim nightly
-  when: neovim_asdf_nvim_where.rc != 0
+  when: lazyvim_asdf_nvim_where.rc != 0
   changed_when: false
   become: false
   tags: lazyvim
@@ -74,7 +74,7 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     asdf set -u neovim nightly
-  when: neovim_asdf_nvim_where.rc != 0
+  when: lazyvim_asdf_nvim_where.rc != 0
   changed_when: false
   become: false
   tags: lazyvim
@@ -83,7 +83,7 @@
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
     NVIM_PATH=$(asdf where neovim)/bin/nvim
-    ln -sf "$NVIM_PATH" {{ neovim_bin_dir }}/nvim
+    ln -sf "$NVIM_PATH" {{ lazyvim_bin_dir }}/nvim
   changed_when: false
   become: false
   tags: lazyvim
@@ -132,7 +132,7 @@
     dest: "{{ item.dest }}"
     state: link
     force: true
-  loop: "{{ neovim_config_symlinks }}"
+  loop: "{{ lazyvim_config_symlinks }}"
   become: false
   tags: lazyvim
 
@@ -142,16 +142,16 @@
     dest: "{{ item.dest }}"
     state: link
     force: true
-  loop: "{{ neovim_dir_symlinks }}"
+  loop: "{{ lazyvim_dir_symlinks }}"
   become: false
   tags: lazyvim
 
 - name: Bootstrap LazyVim (headless install)
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
-    {{ neovim_bin_dir }}/nvim --headless '+Lazy! sync' +qa
+    {{ lazyvim_bin_dir }}/nvim --headless '+Lazy! sync' +qa
   environment:
-    PATH: "{{ neovim_bin_dir }}:{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ lazyvim_bin_dir }}:{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
   changed_when: false
   become: false
   tags: lazyvim

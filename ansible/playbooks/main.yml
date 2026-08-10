@@ -37,7 +37,7 @@
     - role: brew
       tags: [brew]
 
-    - role: neovim
+    - role: lazyvim
       tags: [lazyvim]
 
     - role: zsh
