@@ -96,15 +96,6 @@
   become: false
   tags: dotfiles
 
-- name: Symlink ~/.config/nvim
-  ansible.builtin.file:
-    src: "{{ dotfiles_dir }}/config/nvim"
-    dest: "{{ lookup('env', 'HOME') }}/.config/nvim"
-    state: link
-    force: true
-  become: false
-  tags: dotfiles
-
 # ── Profile-specific dotfiles ─────────────────────────────────────────────────
 
 - name: Check profile config dir exists

@@ -1,4 +1,7 @@
-# Ansible
+# Neovim generated
+dotfiles/config/nvim/lazy-lock.json
+dotfiles/config/nvim/lazyvim.json
+
 .ansible/
 ansible/**/*.retry
 ansible/**/files/*.crt
