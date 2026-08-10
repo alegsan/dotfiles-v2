@@ -28,6 +28,14 @@
 
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 
+- name: Ensure backgrounds directory exists
+  ansible.builtin.file:
+    path: "{{ gnome_wallpaper_dest | dirname }}"
+    state: directory
+    mode: "0755"
+  become: false
+  tags: gnome
+
 - name: Copy wallpaper
   ansible.builtin.copy:
     src: "{{ gnome_wallpaper_src }}"
