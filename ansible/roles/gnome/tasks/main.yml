@@ -47,11 +47,15 @@
 # ── Preferences ────────────────────────────────────────────────────────────────
 
 - name: Apply GNOME desktop settings
-  community.general.dconf:
-    key: "{{ item.path }}"
-    value: "{{ item.value }}"
+  ansible.builtin.command:
+    argv:
+      - dconf
+      - write
+      - "{{ item.path }}"
+      - "{{ item.value }}"
   loop: "{{ gnome_dconf_settings }}"
   become: false
+  changed_when: false
   # Works over SSH — glib falls back to $XDG_RUNTIME_DIR/bus, explicit env is insurance.
   environment:
     DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ ansible_facts['user_uid'] }}/bus"
