@@ -44,6 +44,9 @@
     value: "{{ item.value }}"
   loop: "{{ gnome_dconf_settings }}"
   become: false
+  # Works over SSH — glib falls back to $XDG_RUNTIME_DIR/bus, explicit env is insurance.
+  environment:
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ ansible_facts['user_uid'] }}/bus"
   tags: gnome
 
 - name: Note manual GDM configuration
