@@ -146,6 +146,19 @@
   become: false
   tags: lazyvim
 
+- name: Register nvim as vim via update-alternatives
+  ansible.builtin.command: >-
+    update-alternatives --install /usr/bin/vim vim {{ lazyvim_bin_dir }}/nvim 100
+  become: true
+  changed_when: false
+  tags: lazyvim
+
+- name: Set nvim as default vim alternative
+  ansible.builtin.command: update-alternatives --set vim {{ lazyvim_bin_dir }}/nvim
+  become: true
+  changed_when: false
+  tags: lazyvim
+
 - name: Bootstrap LazyVim (headless install)
   ansible.builtin.shell: |
     eval "$({{ brew_prefix }}/bin/brew shellenv)"
