@@ -1,0 +1,123 @@
+---
+# roles/gnome/defaults/main.yml
+
+# GNOME apps and dependencies.
+gnome_apt_packages:
+  - gnome-tweaks
+  - gnome-shell-extension-manager
+  - gnome-shell-extension-gpaste
+  - dconf-cli
+  - libglib2.0-bin
+  - software-properties-common
+
+# GDM tooling — installed so GDM settings can be changed manually.
+gnome_gdm_packages:
+  - libglib2.0-dev-bin
+
+# Wallpaper — copied from role files/ to the user's backgrounds dir.
+gnome_wallpaper_src: gnome-wallpaper.jpg
+gnome_wallpaper_dest: "{{ lookup('env', 'HOME') }}/.local/share/backgrounds/gnome-wallpaper.jpg"
+
+# GNOME desktop settings — dconf path → value (gsettings value syntax).
+gnome_dconf_settings:
+  # Dock
+  - path: /org/gnome/shell/extensions/dash-to-dock/dock-position
+    value: "'BOTTOM'"
+  - path: /org/gnome/shell/extensions/dash-to-dock/dock-fixed
+    value: "false"
+  - path: /org/gnome/shell/extensions/dash-to-dock/extend-height
+    value: "false"
+  - path: /org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size
+    value: "26"
+
+  # Workspaces: 10 fixed + Ctrl+1..0 switching
+  - path: /org/gnome/desktop/wm/preferences/num-workspaces
+    value: "10"
+  - path: /org/gnome/mutter/dynamic-workspaces
+    value: "false"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-1
+    value: "['<Primary>1']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-2
+    value: "['<Primary>2']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-3
+    value: "['<Primary>3']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-4
+    value: "['<Primary>4']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-5
+    value: "['<Primary>5']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-6
+    value: "['<Primary>6']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-7
+    value: "['<Primary>7']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-8
+    value: "['<Primary>8']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-9
+    value: "['<Primary>9']"
+  - path: /org/gnome/desktop/wm/keybindings/switch-to-workspace-10
+    value: "['<Primary>0']"
+
+  # Window handling
+  - path: /org/gnome/desktop/wm/preferences/mouse-button-modifier
+    value: "'<Super>'"
+  - path: /org/gnome/desktop/wm/preferences/resize-with-right-button
+    value: "true"
+  - path: /org/gnome/mutter/center-new-windows
+    value: "true"
+
+  # Calendar & clock
+  - path: /org/gnome/desktop/calendar/show-weekdate
+    value: "true"
+  - path: /org/gnome/desktop/interface/clock-show-weekday
+    value: "true"
+
+  # Desktop icons: no home/trash
+  - path: /org/gnome/shell/extensions/ding/show-home
+    value: "false"
+  - path: /org/gnome/shell/extensions/ding/show-trash
+    value: "false"
+
+  # GPaste extension
+  - path: /org/gnome/shell/enabled-extensions
+    value: "['GPaste@gnome-shell-extensions.gnome.org']"
+  - path: /org/gnome/GPaste/max-history-size
+    value: "1000"
+  - path: /org/gnome/GPaste/element-size
+    value: "100"
+
+  # Look & feel
+  - path: /org/gnome/desktop/interface/color-scheme
+    value: "'prefer-dark'"
+  - path: /org/gnome/desktop/interface/gtk-theme
+    value: "'Yaru-sage-dark'"
+  - path: /org/gnome/desktop/interface/icon-theme
+    value: "'Yaru-sage'"
+  - path: /org/gnome/desktop/interface/monospace-font-name
+    value: "'Ubuntu Sans Mono 11'"
+  - path: /org/gnome/desktop/interface/show-battery-percentage
+    value: "true"
+  - path: /org/gnome/desktop/a11y/always-show-universal-access-status
+    value: "true"
+
+  # Touchpad & mouse
+  - path: /org/gnome/desktop/peripherals/touchpad/natural-scroll
+    value: "false"
+  - path: /org/gnome/desktop/peripherals/mouse/natural-scroll
+    value: "false"
+  - path: /org/gnome/desktop/peripherals/touchpad/tap-to-click
+    value: "false"
+
+  # Wallpaper (file copied by this role)
+  - path: /org/gnome/desktop/background/picture-uri
+    value: "'file://{{ gnome_wallpaper_dest }}'"
+  - path: /org/gnome/desktop/background/picture-uri-dark
+    value: "'file://{{ gnome_wallpaper_dest }}'"
+  - path: /org/gnome/desktop/screensaver/picture-uri
+    value: "'file://{{ gnome_wallpaper_dest }}'"
+
+  # Shortcuts & misc
+  - path: /org/gnome/settings-daemon/plugins/media-keys/calculator
+    value: "['<Super>c']"
+  - path: /org/gnome/desktop/datetime/automatic-timezone
+    value: "true"
+  - path: /org/gnome/system/locale/region
+    value: "'de_DE.UTF-8'"

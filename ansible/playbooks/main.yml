@@ -54,6 +54,9 @@
     - role: gnome_terminal
       tags: [gnome_terminal]
 
+    - role: gnome
+      tags: [gnome]
+
     - role: tools
       tags: [tools]
 

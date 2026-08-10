@@ -1,0 +1,52 @@
+---
+# roles/gnome/tasks/main.yml — GNOME shell & desktop configuration
+# Applies desktop preferences via dconf (idempotent, user-level).
+
+# ── Packages ───────────────────────────────────────────────────────────────────
+
+- name: Install GNOME apps and dependencies
+  ansible.builtin.apt:
+    name: "{{ gnome_apt_packages }}"
+    state: present
+  become: true
+  tags: gnome
+
+- name: Add gdm-settings PPA
+  ansible.builtin.apt_repository:
+    repo: ppa:ubuntuhandbook1/gdm-settings
+    state: present
+  become: true
+  tags: gnome
+
+- name: Install GDM tooling
+  ansible.builtin.apt:
+    name: "{{ gnome_gdm_packages }}"
+    state: present
+    update_cache: true
+  become: true
+  tags: gnome
+
+# ── Wallpaper ──────────────────────────────────────────────────────────────────
+
+- name: Copy wallpaper
+  ansible.builtin.copy:
+    src: "{{ gnome_wallpaper_src }}"
+    dest: "{{ gnome_wallpaper_dest }}"
+    mode: "0644"
+  become: false
+  tags: gnome
+
+# ── Preferences ────────────────────────────────────────────────────────────────
+
+- name: Apply GNOME desktop settings
+  community.general.dconf:
+    key: "{{ item.path }}"
+    value: "{{ item.value }}"
+  loop: "{{ gnome_dconf_settings }}"
+  become: false
+  tags: gnome
+
+- name: Note manual GDM configuration
+  ansible.builtin.debug:
+    msg: "GDM settings have no programmatic API — configure them manually via the gdm-settings app."
+  tags: gnome

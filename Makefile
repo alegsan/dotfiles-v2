@@ -5,7 +5,7 @@ ANSIBLE_DIR  := $(DOTFILES_DIR)/ansible
 PLAYBOOK     := $(ANSIBLE_DIR)/playbooks/main.yml
 PROFILE      ?= work
 
-.PHONY: help install dotfiles zsh lazyvim packages brew gnome_terminal lint
+.PHONY: help install dotfiles zsh lazyvim packages brew gnome_terminal gnome lint
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -43,5 +43,9 @@ gnome_terminal: ## Install and configure GNOME Terminal
 
 lint: ## Lint ansible playbooks
 	@command -v ansible-lint >/dev/null 2>&1 || \
-		{ echo "\033[1;31m[error]\033[0m ansible-lint not found. Run 'make packages PROFILE=work' or 'make packages PROFILE=private' first."; exit 1; }
-	ansible-lint $(PLAYBOOK)
+		{ echo "\033[1;31m[error]\033[0m ansible-lint not found. Run 'pipx install ansible-lint' first."; exit 1; }
+	ANSIBLE_COLLECTIONS_PATH=/usr/lib/python3/dist-packages ansible-lint $(PLAYBOOK)
+
+
+gnome: ## Configure GNOME desktop (dock, workspaces, theme, wallpaper)
+	ansible-playbook $(PLAYBOOK) -K -e profile=$(PROFILE) --tags common,gnome
