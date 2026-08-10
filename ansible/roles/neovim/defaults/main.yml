@@ -12,10 +12,16 @@ neovim_brew_packages:
   - node
   - lazygit
 
+# Brew casks this role needs
+neovim_brew_casks:
+  - font-ubuntu-sans-nerd-font
+
 # Apt packages required by neovim and its plugins
 neovim_apt_packages:
+  - build-essential
   - luarocks
   - pkg-config
   - ripgrep
   - fd-find
   - python3-pynvim
+  - xclip

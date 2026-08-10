@@ -14,6 +14,17 @@
     PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
   tags: lazyvim
 
+- name: Install neovim brew casks (fonts)
+  community.general.homebrew_cask:
+    name: "{{ neovim_brew_casks }}"
+    state: present
+    path: "{{ brew_prefix }}/bin"
+  become: false
+  environment:
+    PATH: "{{ brew_prefix }}/bin:{{ ansible_env.PATH }}"
+  failed_when: false
+  tags: lazyvim
+
 - name: Install neovim apt dependencies
   ansible.builtin.apt:
     name: "{{ neovim_apt_packages }}"
